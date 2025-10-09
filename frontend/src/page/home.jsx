@@ -1,0 +1,161 @@
+import React, { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import toast, { Toaster } from "react-hot-toast";
+import { AuthContext } from "../contexts/AuthContext";
+import withAuth from "../utils/withAuth";
+import "../styles/home.css";
+
+function HomeComponent() {
+  const navigate = useNavigate();
+  const { addToUserHistory, user, userHistory = [] } = useContext(AuthContext);
+  const [meetingCode, setMeetingCode] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleJoinVideoCall = async () => {
+    if (!meetingCode.trim()) {
+      toast.error("Please enter a meeting code!");
+      return;
+    }
+    setLoading(true);
+    await addToUserHistory(meetingCode);
+    setTimeout(() => {
+      navigate(`/${meetingCode}`);
+      setLoading(false);
+    }, 800);
+  };
+
+  const generateMeetingCode = () => {
+    const code = Math.random().toString(36).substring(2, 8).toUpperCase();
+    navigate(`/${code}`);
+  };
+
+  return (
+    <div className="home-container">
+      <Toaster />
+      {/* NAVBAR */}
+      <nav className="navbar">
+        <div className="logo-section">
+          <div className="logo-icon">🎥</div>
+          <h1 className="logo-text">FlowTalk</h1>
+        </div>
+
+        <div className="nav-actions">
+          <button onClick={() => navigate("/history")} className="history-btn">
+            ⏱ History
+          </button>
+          <div className="user-profile">
+            <img
+              src={user?.avatarUrl || "/default-avatar.png"}
+              alt="user"
+              className="user-avatar"
+            />
+            <span className="username">{user?.name || "Sarah Chen"}</span>
+          </div>
+          <button
+            className="logout-btn"
+            onClick={() => {
+              localStorage.removeItem("token");
+              navigate("/auth");
+            }}
+          >
+            ⇦
+          </button>
+        </div>
+      </nav>
+
+      {/* MAIN CONTENT */}
+      <main className="dashboard">
+        {/* LEFT SIDE */}
+        <section className="left-section">
+          <h1 className="main-heading">
+            Video Calls That Feel Like{" "}
+            <span className="highlight">Real Conversations</span>
+          </h1>
+          <p className="subtext">
+            Welcome back, {user?.name || "Sarah Chen"}! Join an existing meeting
+            or create a new one below.
+          </p>
+
+          {/* Quick Actions */}
+          <div className="quick-actions">
+            <h3>Quick Actions</h3>
+            <div className="input-row">
+              <input
+                type="text"
+                placeholder="Enter Meeting Code"
+                value={meetingCode}
+                onChange={(e) => setMeetingCode(e.target.value)}
+              />
+              <button
+                className="join-btn"
+                onClick={handleJoinVideoCall}
+                disabled={loading}
+              >
+                🎥 Join Meeting
+              </button>
+              <button className="new-btn" onClick={generateMeetingCode}>
+                ＋ New Meeting
+              </button>
+            </div>
+          </div>
+
+          {/* Recent Meetings */}
+          {userHistory.length > 0 && (
+            <div className="recent-section">
+              <div className="recent-header">
+                <h3>Recent Meetings</h3>
+                <span className="view-all">View All</span>
+              </div>
+              <div className="recent-list">
+                {userHistory.slice(0, 4).map((code, i) => (
+                  <div
+                    key={i}
+                    className="recent-card"
+                    onClick={() => navigate(`/${code}`)}
+                  >
+                    <div className="recent-icon">🎦</div>
+                    <div className="recent-text">
+                      <p className="meeting-code">{code}</p>
+                      <p className="meeting-sub">Meeting {i + 1}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </section>
+
+        {/* RIGHT SIDE */}
+        <aside className="right-section">
+          <div className="stats-grid">
+            <StatCard value={userHistory.length || 4} label="Total Meetings" />
+            <StatCard value="25m" label="Avg. Duration" />
+            <StatCard value={userHistory[0] || "ABC123"} label="Last Joined" />
+            <StatCard value="Alex" label="Top Partner" />
+          </div>
+
+          <div className="ready-card">
+            <div className="ready-icon">🎥</div>
+            <h4>Ready to Connect?</h4>
+            <p>
+              Start your next video conversation with crystal-clear quality and
+              seamless experience.
+            </p>
+            <button onClick={generateMeetingCode}>Get Started →</button>
+          </div>
+        </aside>
+      </main>
+    </div>
+  );
+}
+
+function StatCard({ value, label }) {
+  return (
+    <div className="stat-card">
+      <h3 className="stat-value">{value}</h3>
+      <p className="stat-label">{label}</p>
+    </div>
+  );
+}
+
+export default withAuth(HomeComponent);
