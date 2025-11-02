@@ -387,7 +387,6 @@ export default function VideoMeetComponent() {
   };
 
   let sendMessage = () => {
-    console.log(socketRef.current);
     socketRef.current.emit("chat-message", message, username);
     setMessage("");
 
@@ -424,16 +423,11 @@ export default function VideoMeetComponent() {
 
           // Wait for their video stream
           connections[socketListId].onaddstream = (event) => {
-            console.log("BEFORE:", videoRef.current);
-            console.log("FINDING ID: ", socketListId);
-
             let videoExists = videoRef.current.find(
               (video) => video.socketId === socketListId
             );
 
             if (videoExists) {
-              console.log("FOUND EXISTING");
-
               // Update the stream of the existing video
               setVideos((videos) => {
                 const updatedVideos = videos.map((video) =>
@@ -446,7 +440,7 @@ export default function VideoMeetComponent() {
               });
             } else {
               // Create a new video
-              console.log("CREATING NEW");
+
               let newVideo = {
                 socketId: socketListId,
                 stream: event.stream,
@@ -508,7 +502,7 @@ export default function VideoMeetComponent() {
     setAskForUsername(false);
     getMedia();
   };
-  console.log("videos array:", videos);
+
   return (
     <div className="lobby-container">
       {askForUsername ? (
@@ -619,15 +613,24 @@ export default function VideoMeetComponent() {
                 <div className="chat-messages">
                   {messages.length !== 0 ? (
                     messages.map((item, index) => (
-                      <div key={index} style={{ marginBottom: "15px" }}>
-                        <p style={{ fontWeight: "bold", margin: 0 }}>
+                      <div
+                        key={index}
+                        style={{ marginBottom: "15px", color: "black" }}
+                      >
+                        <p
+                          style={{
+                            fontWeight: "bold",
+                            margin: 0,
+                            color: "black",
+                          }}
+                        >
                           {item.sender}
                         </p>
-                        <p style={{ margin: 0 }}>{item.data}</p>
+                        <p style={{ margin: 0, color: "black" }}>{item.data}</p>
                       </div>
                     ))
                   ) : (
-                    <p>No Messages Yet</p>
+                    <p style={{ color: "grey" }}>No Messages Yet</p>
                   )}
                 </div>
                 <div className="chat-input">
@@ -638,6 +641,7 @@ export default function VideoMeetComponent() {
                     label="Enter your chat"
                     variant="outlined"
                     fullWidth
+                    style={{ width: "330px" }}
                   />
                   <Button
                     variant="contained"

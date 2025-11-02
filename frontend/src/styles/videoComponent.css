@@ -104,6 +104,12 @@
 .chat-input {
   position: absolute;
   bottom: 0;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+}
+.chat-messages {
+  margin-top: 20px;
 }
 /* -------------------- */ /* Controls */ /* -------------------- */
 .controls-bar {

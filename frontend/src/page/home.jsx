@@ -34,23 +34,15 @@ function HomeComponent() {
       <Toaster />
       {/* NAVBAR */}
       <nav className="navbar">
-        <div className="logo-section">
-          <div className="logo-icon">🎥</div>
-          <h1 className="logo-text">FlowTalk</h1>
+        <div className="navheader">
+          <h2 className="no-cursor-effect">Flowtalk</h2>
         </div>
 
         <div className="nav-actions">
           <button onClick={() => navigate("/history")} className="history-btn">
             ⏱ History
           </button>
-          <div className="user-profile">
-            <img
-              src={user?.avatarUrl || "/default-avatar.png"}
-              alt="user"
-              className="user-avatar"
-            />
-            <span className="username">{user?.name || "Sarah Chen"}</span>
-          </div>
+
           <button
             className="logout-btn"
             onClick={() => {
@@ -58,7 +50,7 @@ function HomeComponent() {
               navigate("/auth");
             }}
           >
-            ⇦
+            Logout
           </button>
         </div>
       </nav>
@@ -69,7 +61,7 @@ function HomeComponent() {
         <section className="left-section">
           <h1 className="main-heading">
             Video Calls That Feel Like{" "}
-            <span className="highlight">Real Conversations</span>
+            <span className="emp">Real Conversations</span>
           </h1>
           <p className="subtext">
             Welcome back, {user?.name || "Sarah Chen"}! Join an existing meeting
@@ -86,16 +78,18 @@ function HomeComponent() {
                 value={meetingCode}
                 onChange={(e) => setMeetingCode(e.target.value)}
               />
-              <button
-                className="join-btn"
-                onClick={handleJoinVideoCall}
-                disabled={loading}
-              >
-                🎥 Join Meeting
-              </button>
-              <button className="new-btn" onClick={generateMeetingCode}>
-                ＋ New Meeting
-              </button>
+              <div className="grp-button">
+                <button
+                  className="join-btn"
+                  onClick={handleJoinVideoCall}
+                  disabled={loading}
+                >
+                  🎥 Join Meeting
+                </button>
+                <button className="new-btn" onClick={generateMeetingCode}>
+                  ＋ New Meeting
+                </button>
+              </div>
             </div>
           </div>
 
@@ -126,34 +120,7 @@ function HomeComponent() {
         </section>
 
         {/* RIGHT SIDE */}
-        <aside className="right-section">
-          <div className="stats-grid">
-            <StatCard value={userHistory.length || 4} label="Total Meetings" />
-            <StatCard value="25m" label="Avg. Duration" />
-            <StatCard value={userHistory[0] || "ABC123"} label="Last Joined" />
-            <StatCard value="Alex" label="Top Partner" />
-          </div>
-
-          <div className="ready-card">
-            <div className="ready-icon">🎥</div>
-            <h4>Ready to Connect?</h4>
-            <p>
-              Start your next video conversation with crystal-clear quality and
-              seamless experience.
-            </p>
-            <button onClick={generateMeetingCode}>Get Started →</button>
-          </div>
-        </aside>
       </main>
-    </div>
-  );
-}
-
-function StatCard({ value, label }) {
-  return (
-    <div className="stat-card">
-      <h3 className="stat-value">{value}</h3>
-      <p className="stat-label">{label}</p>
     </div>
   );
 }
