@@ -64,8 +64,7 @@ function HomeComponent() {
             <span className="emp">Real Conversations</span>
           </h1>
           <p className="subtext">
-            Welcome back, {user?.name || "Sarah Chen"}! Join an existing meeting
-            or create a new one below.
+            Welcome back! Join an existing meeting or create a new one below.
           </p>
 
           {/* Quick Actions */}
